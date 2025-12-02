@@ -4,25 +4,22 @@ workflows:
     max_build_duration: 60
     environment:
       vars:
-        JAVA_VERSION: "17"
-      android:
-        build_dir: "app"
+        JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
     scripts:
-      - name: Set Java version
+      - name: Set Java 17
         script: |
-          sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-          sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+          export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+          export PATH="$JAVA_HOME/bin:$PATH"
+          java -version
+
+      - name: Make gradlew executable
+        script: chmod +x ./gradlew
 
       - name: Clean project
         script: ./gradlew clean
 
-      - name: Build APK debug
+      - name: Build APK (Debug)
         script: ./gradlew assembleDebug
 
     artifacts:
       - app/build/outputs/**/*.apk
-
-    publishing:
-      email:
-        recipients:
-          - "YOUR_EMAIL@example.com"
